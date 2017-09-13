@@ -70,7 +70,7 @@ public class DAO {
         return rs;
     }
     
-    public ResultSet searchString(String table,String tipo,String escolha){
+    public ResultSet searchByString(String table,String tipo,String escolha){
         PreparedStatement procura = null;
         ResultSet rs = null;
         Connection cn = Connection();

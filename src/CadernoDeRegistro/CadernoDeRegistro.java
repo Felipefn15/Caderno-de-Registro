@@ -515,6 +515,7 @@ int i = 1;
         loginPainel.setVisible(false);
         menuPainel.setVisible(true);
         menuBar.setVisible(true);
+        rs = db.searchByString("usuario", "user_name", login);
         
         func = login;
         }
