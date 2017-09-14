@@ -9,4 +9,4 @@ entre outras funções que ainda não foram bem planejadas.
 
 OBS:O projeto está no inicio, então a parte estética não está das melhores
 
-OBS 2:Necessário instalar Myslq(https://dev.mysql.com/downloads/file/?id=471661). Após a instalação rodar o script 'RegistroDB' para que o Banco de Dados seja criado e a tabela usuários tambem, criando um usuário "Teste" com senha "teste" e de tipo "master".
+OBS 2:Necessário instalar Myslq(na pasta do projeto, mysql-installer-web-community-5.7.19.0). Após a instalação rodar o script 'RegistroDB' para que o Banco de Dados seja criado e a tabela usuários tambem, criando um usuário "Teste" com senha "teste" e de tipo "master".
