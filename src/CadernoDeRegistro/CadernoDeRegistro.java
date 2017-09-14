@@ -7,15 +7,20 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 /**
  *
- * @author Felipe
+ * @author Felipe França Nogueira
  */
 public class CadernoDeRegistro extends javax.swing.JFrame {
-DAO db = new DAO("jdbc:mysql://localhost:3306/registro","root","felipe15");
-String dataBase = "registro";
-String func;
-int i = 1;
+String root = "root";
+String password = "felipe15";
+DAO db = new DAO("jdbc:mysql://localhost:3306/registro",root,password); //Realiza conexão com o banco de dados Registro, recebendo o usuario e a senha do BD como Variáveis.
+String dataBase = "registro";//Armazena nome do Banco de dados em uma Variável para que possa ser usado mais facilmente
+String func;//Variável usada para armazenar nome do usuário após o login.
+int i = 1;//Variável que aponta para o id do arquivo que o usuário estará vendo.
 
-
+    /**
+     * Inicializa a janela incial, Ocultando todas as janelas a não ser a de login.
+     * Se não existir, irá criar a tabela arquivo.
+     */
     public CadernoDeRegistro() {
         initComponents();
         negadoTxt.setVisible(false);
@@ -24,6 +29,8 @@ int i = 1;
         menuPainel.setVisible(false);
         adcPainel.setVisible(false);
         verPainel.setVisible(false);
+        usuarioMenu.setVisible(false);
+        excluirArq.setVisible(false);
         db.update("create table if not exists arquivo"+
                                 "(id int auto_increment primary key,"+
                                 "funcionario varchar(80),"+
@@ -31,7 +38,6 @@ int i = 1;
                                 "camera varchar(20),"+
                                 "texto mediumtext);");
     }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -81,11 +87,12 @@ int i = 1;
         funcAdc = new javax.swing.JLabel();
         excPainel = new javax.swing.JPanel();
         menuBar = new javax.swing.JMenuBar();
+        sistemMenu = new javax.swing.JMenu();
+        logoutMenu = new javax.swing.JMenuItem();
         arquivoMenu = new javax.swing.JMenu();
         novoArq = new javax.swing.JMenuItem();
         verAqr = new javax.swing.JMenuItem();
         excluirArq = new javax.swing.JMenuItem();
-        sairMenu = new javax.swing.JMenuItem();
         usuarioMenu = new javax.swing.JMenu();
         addUser = new javax.swing.JMenuItem();
         excUser = new javax.swing.JMenuItem();
@@ -140,37 +147,38 @@ int i = 1;
         verPainel.setLayout(verPainelLayout);
         verPainelLayout.setHorizontalGroup(
             verPainelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(verPainelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(verPainelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, verPainelLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(idVer, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, verPainelLayout.createSequentialGroup()
+                .addGroup(verPainelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(verPainelLayout.createSequentialGroup()
+                        .addGap(103, 103, 103)
+                        .addComponent(anteriorVer)
+                        .addGap(18, 18, 18)
+                        .addComponent(proximoVer, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(31, 31, 31)
+                        .addComponent(idVer, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(verPainelLayout.createSequentialGroup()
+                        .addContainerGap()
                         .addGroup(verPainelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(verPainelLayout.createSequentialGroup()
-                                .addComponent(jLabel9)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(cameraVer, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 351, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(verPainelLayout.createSequentialGroup()
-                                .addComponent(jLabel7)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(funcVer, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(verPainelLayout.createSequentialGroup()
-                                .addComponent(jLabel8)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(dataVer, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 351, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 49, Short.MAX_VALUE)))
+                                .addGroup(verPainelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(verPainelLayout.createSequentialGroup()
+                                        .addComponent(jLabel9)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(cameraVer, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 351, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(verPainelLayout.createSequentialGroup()
+                                        .addComponent(jLabel7)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(funcVer, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(verPainelLayout.createSequentialGroup()
+                                        .addComponent(jLabel8)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(dataVer, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 351, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(0, 49, Short.MAX_VALUE)))))
                 .addContainerGap())
-            .addGroup(verPainelLayout.createSequentialGroup()
-                .addGap(103, 103, 103)
-                .addComponent(anteriorVer)
-                .addGap(18, 18, 18)
-                .addComponent(proximoVer, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         verPainelLayout.setVerticalGroup(
             verPainelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -194,12 +202,12 @@ int i = 1;
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(verPainelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(proximoVer)
-                    .addComponent(anteriorVer))
-                .addGap(4, 4, 4)
-                .addComponent(idVer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(31, 31, 31))
+                .addGroup(verPainelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(idVer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(verPainelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(proximoVer)
+                        .addComponent(anteriorVer)))
+                .addContainerGap(17, Short.MAX_VALUE))
         );
 
         getContentPane().add(verPainel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 420, 310));
@@ -416,6 +424,18 @@ int i = 1;
 
         getContentPane().add(excPainel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 420, 310));
 
+        sistemMenu.setText("Sistema");
+
+        logoutMenu.setText("Logout");
+        logoutMenu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                logoutMenuActionPerformed(evt);
+            }
+        });
+        sistemMenu.add(logoutMenu);
+
+        menuBar.add(sistemMenu);
+
         arquivoMenu.setText("Arquivo");
 
         novoArq.setText("Novo Arquivo");
@@ -441,14 +461,6 @@ int i = 1;
             }
         });
         arquivoMenu.add(excluirArq);
-
-        sairMenu.setText("Sair");
-        sairMenu.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                sairMenuActionPerformed(evt);
-            }
-        });
-        arquivoMenu.add(sairMenu);
 
         menuBar.add(arquivoMenu);
 
@@ -484,11 +496,21 @@ int i = 1;
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    /**
+     * Ação ao clicar no botão "Acessar"
+     * Irá avaliar se o nome do usuário consta no Banco de dados,
+     * após isso irá avaliar se sua senha coincide com a do respectivo usuário
+     * por ultimo irá ver o tipo de usuário, para saber quais menus e opções ele terá(
+     * Se ele for um usuário comum, as Funções do menu usuário estarão inativas e a opção de apagar arquivos tambem.
+     * Porém se ele for um usuário master essas opções estarão ativas)
+     * depois disso ira passar para a tela principal onde o usuário podera escolher no menu o que deseja fazer
+     * 
+     * caso o login ou senha do usuário seja incompativel o sistema o informará disso e dará a opção de voltar para a tela de login
+     */
     private void acessarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acessarBtnActionPerformed
         String login = loginTxt.getText();
         String senha = senhaTxt.getText();
-        ResultSet rs = db.query("select * from usuarios order by id");
+        ResultSet rs = db.searchByString("usuarios", "user_name", login);
         
         boolean acesso = false;
     try {
@@ -496,6 +518,10 @@ int i = 1;
             if(rs.getString("user_name").equals(login)){
                 if(rs.getString("user_password").equals(senha)){
                     acesso = true;
+                    if(rs.getString("user_type").equals("master")){
+                        usuarioMenu.setVisible(true);
+                        excluirArq.setVisible(true);
+                    }
                 }
             }
         }
@@ -515,12 +541,14 @@ int i = 1;
         loginPainel.setVisible(false);
         menuPainel.setVisible(true);
         menuBar.setVisible(true);
-        rs = db.searchByString("usuario", "user_name", login);
-        
         func = login;
         }
     }//GEN-LAST:event_acessarBtnActionPerformed
-
+    /**
+     * Ação de cliclar no botão voltar,
+     * Este botão aparece quando o usuário digita a senho ou o login incorretamente,
+     * após clilcar neste botão o usuário irá ser redirecionado para a tela de login para que coloque as inforamções corretas.
+     */
     private void voltarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_voltarBtnActionPerformed
         negadoTxt.setVisible(false);
         loginTxt.setVisible(true);
@@ -532,7 +560,10 @@ int i = 1;
         loginTxt.setText("");
         senhaTxt.setText("");
     }//GEN-LAST:event_voltarBtnActionPerformed
-
+    /**
+     * Botão de salvar arquivo, na tela de novo arquivo
+     * Este botão pega as informações passada pelo o usuário e as salva no banco de dados dentro da tabela arquivo.
+     */
     private void salvarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_salvarBtnActionPerformed
         if(anoAdc.getText() != null && mesAdc.getText() != null && diaAdc.getText() != null && funcAdc.getText() != null && txtAdc.getText() != null && cameraAdc.getText() != null){
             String data = anoAdc.getText() + "-" + mesAdc.getText() + "-" + diaAdc.getText();
@@ -545,7 +576,14 @@ int i = 1;
             verAqrActionPerformed(evt);
         }
     }//GEN-LAST:event_salvarBtnActionPerformed
-
+    /**
+     * Opção do menu para ver arquivos que constam no Banco de Dados
+     * ao clicar nesta opção a tela de apresentação de arquivos recebe verdadeiro.
+     * usando a variável 'i' inicializada no inicio do programa ele ira passar de id em id.
+     * A passagem de Arquivo(por id) é feita ao clicar no botão 'proximo' ou 'anterior'(suas funções serão explicadas mais a baixo).
+     * No final faz um teste para saber se existe um arquivo anterior, se não o botão 'anterior' desaparece.
+     * O mesmo com  botão 'proximo' caso não exista um arquivo a seguir
+     */
     private void verAqrActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_verAqrActionPerformed
         loginPainel.setVisible(false);
         menuPainel.setVisible(false);
@@ -553,6 +591,7 @@ int i = 1;
         verPainel.setVisible(true);
         proximoVer.setVisible(true);
         anteriorVer.setVisible(true);
+        int cont = 0;
         ResultSet rs = null;
         rs = db.searchById("arquivo",i);
         try {
@@ -563,19 +602,27 @@ int i = 1;
                 cameraVer.setText(rs.getString("camera"));
                 txtVer.setText(rs.getNString("texto"));
             }
-            if(rs.isFirst()){
+            rs = db.query("select * from arquivo");
+            while(rs.next()){
+                cont++;
+            }
+            if(i == 1){
                 anteriorVer.setVisible(false);
             }
-            if (rs.isLast()){
+            if (i == cont){
                 proximoVer.setVisible(false);
             }
+
         } catch (SQLException ex) {
              Logger.getLogger(CadernoDeRegistro.class.getName()).log(Level.SEVERE, null, ex);
         }
         
                 
     }//GEN-LAST:event_verAqrActionPerformed
-
+    /**
+     * Opção do menu para criar e salvar arquivo novo.
+     * Torna verdadeira a visibilidade da tela de adicionar arquivo.
+     */
     private void novoArqActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_novoArqActionPerformed
 
         loginPainel.setVisible(false);
@@ -590,16 +637,10 @@ int i = 1;
         verPainel.setVisible(false);
         funcAdc.setText(func);
     }//GEN-LAST:event_novoArqActionPerformed
-
-    private void sairMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sairMenuActionPerformed
-        loginPainel.setVisible(true);
-        menuPainel.setVisible(false);
-        adcPainel.setVisible(false);
-        verPainel.setVisible(false);
-        loginTxt.setText("");
-        senhaTxt.setText("");
-    }//GEN-LAST:event_sairMenuActionPerformed
-
+    /**
+     * (OPÇÃO EM DESENVOLVIMENTO)Opção do menu 'arquivo', exclusiva para o tipo de usuário master, para excluir um arquivo a partir do seu id.
+     *  
+     */
     private void excluirArqActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_excluirArqActionPerformed
         loginPainel.setVisible(false);
         menuPainel.setVisible(false);
@@ -607,34 +648,69 @@ int i = 1;
         verPainel.setVisible(false);
         excPainel.setVisible(true);
     }//GEN-LAST:event_excluirArqActionPerformed
-
+    /**
+     * Ação ao clicar no botão 'Anterior' na tela de visualização de arquivos.
+     * Essa ação diminui um de 'i',varável usada para passar o id do arquivo que o usuário está vendo.
+     * Opção fica invisivel se o arquivo for o primeiro.
+     */
     private void anteriorVerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_anteriorVerActionPerformed
         i -=1;
         verAqrActionPerformed(evt);
     }//GEN-LAST:event_anteriorVerActionPerformed
-
+    /**
+     * Ação ao clicar no botão 'Proximo' na tela de visualização de arquivos.
+     * Essa ação acrescenta um de 'i',varável usada para passar o id do arquivo que o usuário está vendo.
+     * Opção fica invisivel se o arquivo for o ultimo.
+     */
     private void proximoVerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_proximoVerActionPerformed
         i +=1;
         verAqrActionPerformed(evt);
 
     }//GEN-LAST:event_proximoVerActionPerformed
-
+    /**
+     * (OPÇÃO EM DESENVOLVIMENTO)Opção do menu usuário, especifico para usuários master, para adicionar novo usuário no banco de dados
+     */
     private void addUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addUserActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_addUserActionPerformed
-
+    /**
+     * (OPÇÃO EM DESENVOLVIMENTO)Opção do menu usuário, especifico para usuários master, para excluir usuário do banco de dados
+     */
     private void excUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_excUserActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_excUserActionPerformed
-
+    /**
+     * (OPÇÃO EM DESENVOLVIMENTO)Opção do menu usuário, especifico para usuários master, para editar usuário do banco de dados
+     */
     private void editUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editUserActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_editUserActionPerformed
+    /**
+     * Opção do menu 'Sistema' para fazer o logout e voltar para o painel de menu
+     */
+    private void logoutMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutMenuActionPerformed
+    try {
+        db.Connection().close();
+        db = new DAO("jdbc:mysql://localhost:3306/registro",root,password); //Realiza conexão com o banco de dados Registro, recebendo o usuario e a senha do BD como Variáveis.
+    } catch (SQLException ex) {
+        Logger.getLogger(CadernoDeRegistro.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    loginTxt.setText("");
+    senhaTxt.setText("");
+    negadoTxt.setVisible(false);
+    voltarBtn.setVisible(false);
+    menuBar.setVisible(false);
+    menuPainel.setVisible(false);
+    adcPainel.setVisible(false);
+    verPainel.setVisible(false);
+    usuarioMenu.setVisible(false);
+    excluirArq.setVisible(false);
+    loginPainel.setVisible(true);
+    }//GEN-LAST:event_logoutMenuActionPerformed
 
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
-
          //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
@@ -656,14 +732,8 @@ int i = 1;
             java.util.logging.Logger.getLogger(CadernoDeRegistro.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new CadernoDeRegistro().setVisible(true);
-                
-            }
-        });
+        java.awt.EventQueue.invokeLater(new RunnableImpl());
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -700,16 +770,17 @@ int i = 1;
     private javax.swing.JLabel loginLabel;
     private javax.swing.JPanel loginPainel;
     private javax.swing.JTextField loginTxt;
+    private javax.swing.JMenuItem logoutMenu;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JPanel menuPainel;
     private javax.swing.JFormattedTextField mesAdc;
     private javax.swing.JLabel negadoTxt;
     private javax.swing.JMenuItem novoArq;
     private javax.swing.JButton proximoVer;
-    private javax.swing.JMenuItem sairMenu;
     private javax.swing.JButton salvarBtn;
     private javax.swing.JLabel senhaLabel;
     private javax.swing.JPasswordField senhaTxt;
+    private javax.swing.JMenu sistemMenu;
     private javax.swing.JTextArea txtAdc;
     private javax.swing.JTextArea txtVer;
     private javax.swing.JMenu usuarioMenu;
@@ -717,4 +788,15 @@ int i = 1;
     private javax.swing.JPanel verPainel;
     private javax.swing.JButton voltarBtn;
     // End of variables declaration//GEN-END:variables
+
+    private static class RunnableImpl implements Runnable {
+
+        public RunnableImpl() {
+        }
+
+        public void run() {
+            new CadernoDeRegistro().setVisible(true);
+            
+        }
+    }
 }
